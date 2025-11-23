@@ -3,10 +3,6 @@
 API REST desenvolvida para o gerenciamento de pedidos, com foco em **resiliência**, **baixa latência**, **consistência de dados** e processamento **orientado a eventos**.
 
 <p align="center">
-  <img src="https://via.placeholder.com/900x350.png?text=Delivery+Management+System" />
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Java-17-007396?logo=openjdk&style=for-the-badge" />
   <img src="https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=springboot&style=for-the-badge" />
   <img src="https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&style=for-the-badge" />
@@ -18,7 +14,7 @@ API REST desenvolvida para o gerenciamento de pedidos, com foco em **resiliênci
 
 # 📖 Visão Geral
 
-Este sistema implementa um fluxo logístico orientado a eventos, projetado para:
+Este sistema implementa um fluxo orientado a eventos, projetado para:
 
 - Baixa latência  
 - Consistência forte  
@@ -47,7 +43,7 @@ graph LR
 1.  **Recebimento:** A API recebe a requisição de criação de pedido.
 2.  **Persistência Atômica:** O pedido (tabela `orders`) e o evento de criação (tabela `order_events`) são salvos na mesma transação de banco de dados. Isso garante atomicidade: ou tudo é salvo, ou nada é salvo.
 3.  **Propagação (Best Effort):** O sistema tenta enviar o evento para o RabbitMQ imediatamente após o commit no banco.
-4.  **Processamento Assíncrono:** Um consumidor (Worker) lê a fila, simula o tempo de transporte logístico e atualiza o status do pedido no banco até a entrega final (`DELIVERED`).
+4.  **Processamento Assíncrono:** Um consumidor (Worker) lê a fila e atualiza o status do pedido no banco até a entrega final (`DELIVERED`).
 
 ---
 
@@ -81,7 +77,7 @@ Para atender aos requisitos técnicos rigorosos, foram adotadas as seguintes est
 | :--- | :--- |
 | **Java 17 + Spring Boot 3** | Plataforma robusta, moderna e com excelente ecossistema para microsserviços e integração com mensageria (Spring AMQP). |
 | **PostgreSQL** | Banco relacional ACID para garantir a integridade dos dados críticos (Pedidos) e Histórico de Eventos. |
-| **RabbitMQ** | Broker de mensagens maduro e amplamente utilizado para desacoplar a recepção do pedido do processamento logístico. |
+| **RabbitMQ** | Broker de mensagens maduro e amplamente utilizado para desacoplar a recepção do pedido do processamento. |
 | **Docker & Compose** | Garante que a aplicação rode da mesma forma na máquina do desenvolvedor e no servidor ("Plug and Play"). |
 | **Testcontainers** | Utilizado nos testes de integração para subir containers reais do banco e fila, garantindo validação em ambiente real (sem mocks de infra). |
 | **Lombok** | Redução de código repetitivo (boilerplate), focando na regra de negócio. |
