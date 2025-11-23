@@ -89,6 +89,8 @@ Para atender aos requisitos técnicos rigorosos, foram adotadas as seguintes est
 ### Pré-requisitos
 * Docker e Docker Compose instalados.
 * Java 17 e Maven (opcional, caso queira rodar fora do Docker).
+* Se quiser subir rabbit, postgree e java, só descomentar o app no arquivo compose.yaml
+* O docker sobe o postgree na porta 5432 e o rabbit na 5672/15672 
 
 ### Passo a Passo
 
