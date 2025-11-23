@@ -106,21 +106,6 @@ Para atender aos requisitos técnicos rigorosos, foram adotadas as seguintes est
 
 ---
 
-## 🧪 Testes Automatizados
-
-O projeto prioriza a qualidade com uma suíte de testes de integração robusta (`OrderApiIntegrationTest`) que valida o fluxo ponta a ponta:
-
-* Criação via API.
-* Persistência no Banco de Dados.
-* Envio/Recebimento na Fila RabbitMQ.
-* Atualização de Status pelo Worker.
-
-Para rodar os testes (que subirão containers temporários via Testcontainers):
-
-```bash
-mvn test
-```
-
 ## 🔗 Endpoints Principais
 
 | Método | Rota | Descrição | Exemplo de Body |
