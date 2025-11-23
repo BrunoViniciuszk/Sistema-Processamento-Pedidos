@@ -1,5 +1,6 @@
 package com.example.order_api.model;
 
+import com.example.order_api.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -18,8 +19,9 @@ public class Order {
     @Column(nullable = false)
     private String customerId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String currentStatus;
+    private OrderStatus currentStatus;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

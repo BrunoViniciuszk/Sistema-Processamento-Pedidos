@@ -1,5 +1,6 @@
 package com.example.order_api.worker;
 
+import com.example.order_api.enums.OrderStatus;
 import com.example.order_api.service.OrderService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,15 +23,18 @@ public class OrderConsumer {
     public void handleEvent(String payload) {
         try {
             JsonNode node = objectMapper.readTree(payload);
-            String status = node.get("status").asText();
+
+            String statusString = node.get("status").asText();
+            OrderStatus status  = OrderStatus.valueOf(statusString);
+
             UUID id = UUID.fromString(node.get("id").asText());
 
             log.info("Processando evento de logística para pedido: {}", id);
             Thread.sleep(3000);
 
             switch (status) {
-                case "ORDER_CREATED" -> orderService.updateStatus(id, "IN_TRANSPORT");
-                case "IN_TRANSPORT" -> orderService.updateStatus(id, "DELIVERED");
+                case ORDER_CREATED -> orderService.updateStatus(id, OrderStatus.IN_TRANSPORT);
+                case IN_TRANSPORT -> orderService.updateStatus(id, OrderStatus.DELIVERED);
             }
 
         } catch (Exception e) {

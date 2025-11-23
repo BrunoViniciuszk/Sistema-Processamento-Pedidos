@@ -4,6 +4,7 @@ import com.example.order_api.config.RabbitConfig;
 import com.example.order_api.dto.CreateOrderRequest;
 import com.example.order_api.dto.OrderEventResponse;
 import com.example.order_api.dto.OrderResponse;
+import com.example.order_api.enums.OrderStatus;
 import com.example.order_api.model.Order;
 import com.example.order_api.model.OrderEvent;
 import com.example.order_api.repository.OrderEventRepository;
@@ -37,19 +38,19 @@ public class OrderService {
         Order order = Order.builder()
                 .id(orderId)
                 .customerId(request.customerId())
-                .currentStatus("ORDER_CREATED")
+                .currentStatus(OrderStatus.ORDER_CREATED)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
         orderRepository.save(order);
 
 
-        String jsonPayload = toJson(new OrderResponse(orderId, request.customerId(), "ORDER_CREATED", now));
+        String jsonPayload = toJson(new OrderResponse(orderId, request.customerId(), OrderStatus.ORDER_CREATED, now));
 
         OrderEvent event = OrderEvent.builder()
                 .id(UUID.randomUUID())
                 .orderId(orderId)
-                .eventType("ORDER_CREATED")
+                .eventType(OrderStatus.ORDER_CREATED.name())
                 .payload(jsonPayload)
                 .eventTime(now)
                 .sent(false)
@@ -63,10 +64,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateStatus(UUID orderId, String newStatus) {
+    public void updateStatus(UUID orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow();
 
-        if(order.getCurrentStatus().equals(newStatus)) return;
+        if(order.getCurrentStatus() == newStatus) return;
 
         order.setCurrentStatus(newStatus);
         order.setUpdatedAt(LocalDateTime.now());
@@ -77,7 +78,7 @@ public class OrderService {
         OrderEvent event = OrderEvent.builder()
                 .id(UUID.randomUUID())
                 .orderId(orderId)
-                .eventType(newStatus)
+                .eventType(newStatus.name())
                 .payload(jsonPayload)
                 .eventTime(LocalDateTime.now())
                 .sent(false)
@@ -85,7 +86,7 @@ public class OrderService {
         eventRepository.save(event);
 
 
-        if (!newStatus.equals("DELIVERED")) {
+        if (newStatus != OrderStatus.DELIVERED) {
             trySendToRabbit(event);
         }
     }
